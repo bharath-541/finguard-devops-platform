@@ -26,6 +26,17 @@ RUN set -eux; \
 RUN set -eux; \
     arch="$(dpkg --print-architecture)"; \
     case "$arch" in \
+      amd64) buildx_arch="amd64" ;; \
+      arm64) buildx_arch="arm64" ;; \
+      *) echo "Unsupported architecture: $arch" >&2; exit 1 ;; \
+    esac; \
+    mkdir -p /usr/local/lib/docker/cli-plugins; \
+    curl --http1.1 --retry 5 --retry-delay 3 --retry-all-errors -fsSL "https://github.com/docker/buildx/releases/download/v0.30.1/buildx-v0.30.1.linux-${buildx_arch}" -o /usr/local/lib/docker/cli-plugins/docker-buildx; \
+    chmod +x /usr/local/lib/docker/cli-plugins/docker-buildx
+
+RUN set -eux; \
+    arch="$(dpkg --print-architecture)"; \
+    case "$arch" in \
       amd64) aws_arch="x86_64" ;; \
       arm64) aws_arch="aarch64" ;; \
       *) echo "Unsupported architecture: $arch" >&2; exit 1 ;; \
