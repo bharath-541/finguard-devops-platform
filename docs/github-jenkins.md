@@ -44,7 +44,25 @@ git push -u origin main
 
 ## Jenkins GitHub Job
 
-In Jenkins:
+Start the local Jenkins runner first:
+
+```bash
+docker compose --profile ci up -d --build jenkins
+```
+
+Open:
+
+```text
+http://localhost:8081
+```
+
+Get the initial unlock password from:
+
+```bash
+docker compose --profile ci logs jenkins
+```
+
+Then create the job in Jenkins:
 
 1. Create a new Pipeline job.
 2. Choose **Pipeline script from SCM**.
@@ -52,13 +70,13 @@ In Jenkins:
 4. Repository URL:
 
 ```text
-https://github.com/YOUR_USERNAME/finguard-devops-platform.git
+https://github.com/bharath-541/finguard-devops-platform.git
 ```
 
 5. Branch:
 
 ```text
-main
+*/main
 ```
 
 6. Script path:
@@ -76,12 +94,30 @@ Jenkins needs these credentials/tools:
 - Docker available on the Jenkins agent.
 - kubectl configured for the k3s EC2 cluster.
 
-For this compact deployment, a simple approach is:
+For this compact deployment, the local Jenkins runner mounts:
 
-- Keep the GitHub repo public, or add GitHub credentials in Jenkins.
-- Run Jenkins locally through Docker.
-- Store AWS access keys in Jenkins credentials.
-- Put the generated `kubeconfig-finguard` on the Jenkins machine.
+- `~/.aws` into the Jenkins container for AWS CLI access.
+- `kubeconfig-finguard` into the Jenkins container for Kubernetes access.
+- `/var/run/docker.sock` so Jenkins can build and push Docker images through Docker Desktop.
+
+Before running the Jenkins job, check these commands from the project root:
+
+```bash
+aws sts get-caller-identity
+KUBECONFIG=./kubeconfig-finguard kubectl get nodes
+docker ps
+```
+
+When Jenkins asks for build parameters, use:
+
+```text
+AWS_ACCOUNT_ID = your AWS account ID
+AWS_REGION = ap-south-1
+IMAGE_TAG = latest
+DEPLOY_OBSERVABILITY = false
+```
+
+Set `DEPLOY_OBSERVABILITY=true` only when you want Jenkins to apply the monitoring, logging, and Vault manifests again.
 
 ## CI/CD Explanation
 

@@ -27,6 +27,7 @@ data "aws_ami" "ubuntu" {
 resource "aws_ecr_repository" "fraud_api" {
   name                 = "${var.project_name}-fraud-api"
   image_tag_mutability = "MUTABLE"
+  force_delete         = true
 
   image_scanning_configuration {
     scan_on_push = true
@@ -40,6 +41,7 @@ resource "aws_ecr_repository" "fraud_api" {
 resource "aws_ecr_repository" "dashboard" {
   name                 = "${var.project_name}-dashboard"
   image_tag_mutability = "MUTABLE"
+  force_delete         = true
 
   image_scanning_configuration {
     scan_on_push = true

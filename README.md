@@ -189,6 +189,14 @@ terraform output kibana_url
 
 ## Jenkins Flow
 
+Start the local Jenkins runner:
+
+```bash
+docker compose --profile ci up -d --build jenkins
+```
+
+Open Jenkins at `http://localhost:8081`. The setup guide is in `jenkins/README.md`.
+
 The `Jenkinsfile` does this:
 
 1. Runs API tests.

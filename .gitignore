@@ -12,6 +12,7 @@ tfplan
 !*.tfvars.example
 kubeconfig-*
 *.pem
+.jenkins_home/
 dist/
 build/
 node_modules/

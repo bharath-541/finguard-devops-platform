@@ -89,3 +89,22 @@ services:
       - "5601:5601"
     depends_on:
       - elasticsearch
+
+  jenkins:
+    build:
+      context: ./jenkins
+    image: finguard/jenkins:local
+    profiles: ["ci"]
+    user: root
+    environment:
+      DOCKER_HOST: unix:///var/run/docker.sock
+      JENKINS_HOME: ${PWD}/.jenkins_home
+      KUBECONFIG: ${PWD}/kubeconfig-finguard
+    volumes:
+      - ${PWD}/.jenkins_home:${PWD}/.jenkins_home
+      - ${PWD}/kubeconfig-finguard:${PWD}/kubeconfig-finguard:ro
+      - ${HOME}/.aws:/root/.aws:ro
+      - /var/run/docker.sock:/var/run/docker.sock
+    ports:
+      - "8081:8080"
+      - "50000:50000"

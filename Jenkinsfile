@@ -35,12 +35,12 @@ pipeline {
       steps {
         sh '''
           ECR_REGISTRY="${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_REGION}.amazonaws.com"
-          docker buildx build --platform linux/amd64 \
+          docker build --platform linux/amd64 \
             -t "${ECR_REGISTRY}/${PROJECT_NAME}-fraud-api:${IMAGE_TAG}" \
-            --load apps/fraud-api
-          docker buildx build --platform linux/amd64 \
+            apps/fraud-api
+          docker build --platform linux/amd64 \
             -t "${ECR_REGISTRY}/${PROJECT_NAME}-dashboard:${IMAGE_TAG}" \
-            --load apps/dashboard
+            apps/dashboard
         '''
       }
     }
