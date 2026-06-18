@@ -1,6 +1,6 @@
-# FinGuard Lite - Global Fraud Intelligence DevOps Demo
+# FinGuard Lite - Global Fraud Intelligence Platform
 
-FinGuard Lite is a simplified implementation of the case study. It shows the full DevOps flow without making the project too heavy for a viva:
+FinGuard Lite is a compact cloud-native fraud intelligence platform that demonstrates the complete DevOps flow while keeping the architecture practical to run and maintain:
 
 - FastAPI fraud scoring service
 - Static operational dashboard
@@ -32,7 +32,7 @@ flowchart LR
   k8s --> api
 ```
 
-The important viva explanation is simple: Jenkins builds and pushes images, Kubernetes runs them with replicas and probes, Prometheus/Grafana monitor metrics, ELK stores logs, Vault demonstrates secret storage, and Terraform creates the cloud machine.
+The operating model is simple: Jenkins builds and pushes images, Kubernetes runs them with replicas and probes, Prometheus/Grafana monitor metrics, ELK stores logs, Vault demonstrates secret storage, and Terraform creates the cloud machine.
 
 For the GitHub-based CI/CD path, see `docs/github-jenkins.md`.
 
@@ -248,9 +248,9 @@ Status:
 | Security controls | Kubernetes Secret, Vault demo, ECR scanning, NetworkPolicy |
 | Disaster recovery | Rolling updates, rollout undo, pod self-healing, scripted outage demo |
 
-## Viva Explanation
+## Technical Walkthrough
 
-Use this short explanation:
+Use this short walkthrough:
 
 "FinGuard Lite is a cloud-native fraud detection demo. A transaction enters through the dashboard or API. The FastAPI service calculates a risk score using amount, velocity, failed logins, country, device, and payment network status. Kubernetes runs multiple replicas, so if a pod fails, another pod continues serving traffic. Jenkins automates tests, Docker image builds, ECR push, Kubernetes deployment, and rollback. Prometheus collects API metrics, Grafana visualizes latency and fraud decisions, Fluent Bit sends logs to Elasticsearch, Kibana shows those logs, and Vault demonstrates secret management. Terraform creates the AWS EC2 instance and bootstraps k3s, so the infrastructure is repeatable."
 

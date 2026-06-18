@@ -58,4 +58,4 @@ sequenceDiagram
 
 ## Tradeoff
 
-The project uses EC2 + k3s instead of EKS. EKS is more production-like, but EC2 + k3s is easier to deploy, cheaper, and better for a student viva where the panel needs to see and understand each moving part.
+The project uses EC2 + k3s instead of EKS. EKS is more production-like, but EC2 + k3s is easier to deploy, cheaper, and easier to inspect during a technical walkthrough where each moving part should be visible.

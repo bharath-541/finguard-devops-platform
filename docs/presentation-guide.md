@@ -1,4 +1,4 @@
-# Viva Guide
+# Presentation Guide
 
 ## One-Minute Explanation
 
@@ -10,7 +10,7 @@ FinGuard Lite is a simplified fraud intelligence platform. It receives payment t
 - One dashboard keeps the demo visual.
 - k3s gives real Kubernetes without EKS complexity.
 - Optional profiles keep heavy tools separate from the basic demo.
-- Scripts make viva scenarios repeatable.
+- Scripts make evaluation scenarios repeatable.
 
 ## Questions You May Get
 
@@ -36,7 +36,7 @@ Logs are needed when fraud scoring fails or latency increases. Fluent Bit sends 
 
 ### Why Vault?
 
-Vault is for secrets such as tokens and thresholds. This demo runs Vault in dev mode to keep the viva simple. In production, Vault would use persistent storage, policies, and Kubernetes authentication.
+Vault is for secrets such as tokens and thresholds. This demo runs Vault in dev mode to keep the setup simple. In production, Vault would use persistent storage, policies, and Kubernetes authentication.
 
 ### How Is Disaster Recovery Shown?
 
@@ -58,4 +58,4 @@ Use `scripts/load_spike.sh` or the dashboard button. The API blocks high-risk tr
 
 ## Keep This Line Ready
 
-"This is a student-friendly version of a production design. The structure is production-oriented, but tools like Vault and ELK are kept lightweight so the full system can be executed and explained during evaluation."
+"This is a compact version of a production design. The structure is production-oriented, while tools like Vault and ELK are kept lightweight so the full system can be executed and explained during evaluation."

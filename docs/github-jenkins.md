@@ -76,13 +76,13 @@ Jenkins needs these credentials/tools:
 - Docker available on the Jenkins agent.
 - kubectl configured for the k3s EC2 cluster.
 
-For a student demo, a simple approach is:
+For this compact deployment, a simple approach is:
 
 - Keep the GitHub repo public, or add GitHub credentials in Jenkins.
 - Run Jenkins locally through Docker.
 - Store AWS access keys in Jenkins credentials.
 - Put the generated `kubeconfig-finguard` on the Jenkins machine.
 
-## Viva Explanation
+## CI/CD Explanation
 
 "GitHub is the source of truth for code. Jenkins reads the `Jenkinsfile` from GitHub, runs tests, builds Docker images, pushes them to Amazon ECR, and updates the Kubernetes deployment. This gives us repeatable CI/CD instead of manual deployment."
