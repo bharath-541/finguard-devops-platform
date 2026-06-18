@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: finguard-config
+  namespace: finguard
+data:
+  FRAUD_REVIEW_THRESHOLD: "45"
+  FRAUD_BLOCK_THRESHOLD: "75"
+  RECENT_TRANSACTION_LIMIT: "40"

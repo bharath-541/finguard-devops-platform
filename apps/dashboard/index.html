@@ -1,0 +1,140 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FinGuard Lite</title>
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <main class="app-shell">
+      <header class="topbar">
+        <div>
+          <p class="section-label">Live fraud operations</p>
+          <h1>FinGuard Lite</h1>
+        </div>
+        <div class="topbar-actions" aria-label="Simulation controls">
+          <button id="fraudSpikeBtn" type="button">Fraud Spike</button>
+          <button id="networkFailureBtn" type="button">Network Failure</button>
+          <button id="podOutageBtn" type="button">Pod Outage</button>
+          <button id="rollbackBtn" type="button">Rollback</button>
+        </div>
+      </header>
+
+      <section class="metrics-grid" aria-label="Platform metrics">
+        <article class="metric-panel">
+          <span>Total scored</span>
+          <strong id="totalScored">0</strong>
+        </article>
+        <article class="metric-panel">
+          <span>Blocked</span>
+          <strong id="blockedCount">0</strong>
+        </article>
+        <article class="metric-panel">
+          <span>API latency</span>
+          <strong id="latencyValue">0 ms</strong>
+        </article>
+        <article class="metric-panel">
+          <span>Pod health</span>
+          <strong id="podHealth">checking</strong>
+        </article>
+      </section>
+
+      <section class="workspace-grid">
+        <section class="panel transactions-panel" aria-labelledby="transactionsTitle">
+          <div class="panel-heading">
+            <div>
+              <p class="section-label">Risk stream</p>
+              <h2 id="transactionsTitle">Recent transactions</h2>
+            </div>
+            <span id="apiStatus" class="status-chip is-muted">API pending</span>
+          </div>
+
+          <div class="table-frame">
+            <table>
+              <thead>
+                <tr>
+                  <th scope="col">Transaction</th>
+                  <th scope="col">Amount</th>
+                  <th scope="col">Country</th>
+                  <th scope="col">Risk</th>
+                  <th scope="col">Decision</th>
+                  <th scope="col">Reason</th>
+                </tr>
+              </thead>
+              <tbody id="transactionRows"></tbody>
+            </table>
+          </div>
+        </section>
+
+        <aside class="panel intelligence-panel" aria-labelledby="intelTitle">
+          <div class="panel-heading">
+            <div>
+              <p class="section-label">Decision mix</p>
+              <h2 id="intelTitle">Risk distribution</h2>
+            </div>
+          </div>
+
+          <div class="bars" aria-label="Risk decision distribution">
+            <div class="bar-row">
+              <span>ALLOW</span>
+              <div class="bar-track"><div id="allowBar" class="bar allow"></div></div>
+              <strong id="allowCount">0</strong>
+            </div>
+            <div class="bar-row">
+              <span>REVIEW</span>
+              <div class="bar-track"><div id="reviewBar" class="bar review"></div></div>
+              <strong id="reviewCount">0</strong>
+            </div>
+            <div class="bar-row">
+              <span>BLOCK</span>
+              <div class="bar-track"><div id="blockBar" class="bar block"></div></div>
+              <strong id="blockCount">0</strong>
+            </div>
+          </div>
+
+          <div class="signal-stack">
+            <div>
+              <span>Jenkins rollout</span>
+              <strong id="rolloutState">stable</strong>
+            </div>
+            <div>
+              <span>Vault secrets</span>
+              <strong id="vaultState">mounted</strong>
+            </div>
+            <div>
+              <span>Logging</span>
+              <strong id="loggingState">streaming</strong>
+            </div>
+          </div>
+        </aside>
+      </section>
+
+      <section class="ops-strip" aria-label="Platform components">
+        <div>
+          <span>Kubernetes</span>
+          <strong id="k8sState">3 API pods</strong>
+        </div>
+        <div>
+          <span>Prometheus</span>
+          <strong>scraping /metrics</strong>
+        </div>
+        <div>
+          <span>Grafana</span>
+          <strong>fraud dashboard</strong>
+        </div>
+        <div>
+          <span>ELK Stack</span>
+          <strong>JSON logs</strong>
+        </div>
+      </section>
+
+      <section class="timeline" aria-label="Operational events">
+        <h2>Event trail</h2>
+        <ol id="eventTrail"></ol>
+      </section>
+    </main>
+
+    <script src="/app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,82 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: fraud-api
+  namespace: finguard
+  labels:
+    app.kubernetes.io/name: fraud-api
+    app.kubernetes.io/part-of: finguard
+spec:
+  replicas: 3
+  revisionHistoryLimit: 5
+  strategy:
+    type: RollingUpdate
+    rollingUpdate:
+      maxSurge: 1
+      maxUnavailable: 0
+  selector:
+    matchLabels:
+      app.kubernetes.io/name: fraud-api
+  template:
+    metadata:
+      labels:
+        app.kubernetes.io/name: fraud-api
+        app.kubernetes.io/part-of: finguard
+      annotations:
+        prometheus.io/scrape: "true"
+        prometheus.io/path: "/metrics"
+        prometheus.io/port: "8000"
+    spec:
+      imagePullSecrets:
+        - name: ecr-pull-secret
+      containers:
+        - name: fraud-api
+          image: finguard/fraud-api:latest
+          imagePullPolicy: IfNotPresent
+          ports:
+            - name: http
+              containerPort: 8000
+          envFrom:
+            - configMapRef:
+                name: finguard-config
+            - secretRef:
+                name: finguard-secrets
+          env:
+            - name: VAULT_ADDR
+              value: "http://vault.vault.svc.cluster.local:8200"
+            - name: VAULT_SECRET_PATH
+              value: "secret/data/finguard"
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 5
+            periodSeconds: 10
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: http
+            initialDelaySeconds: 20
+            periodSeconds: 20
+          resources:
+            requests:
+              cpu: 100m
+              memory: 128Mi
+            limits:
+              cpu: 500m
+              memory: 512Mi
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: fraud-api
+  namespace: finguard
+  labels:
+    app.kubernetes.io/name: fraud-api
+spec:
+  selector:
+    app.kubernetes.io/name: fraud-api
+  ports:
+    - name: http
+      port: 8000
+      targetPort: http

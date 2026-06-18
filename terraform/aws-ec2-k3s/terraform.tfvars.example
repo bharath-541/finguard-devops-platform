@@ -1,0 +1,5 @@
+aws_region    = "ap-south-1"
+project_name  = "finguard-lite"
+instance_type = "m7i-flex.large"
+key_name      = "your-existing-ec2-keypair-name"
+allowed_cidr  = "YOUR_PUBLIC_IP/32"
