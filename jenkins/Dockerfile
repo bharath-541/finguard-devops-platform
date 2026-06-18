@@ -6,9 +6,22 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends \
       ca-certificates \
       curl \
-      docker.io \
+      tar \
       unzip \
     && rm -rf /var/lib/apt/lists/*
+
+RUN set -eux; \
+    arch="$(dpkg --print-architecture)"; \
+    case "$arch" in \
+      amd64) docker_arch="x86_64" ;; \
+      arm64) docker_arch="aarch64" ;; \
+      *) echo "Unsupported architecture: $arch" >&2; exit 1 ;; \
+    esac; \
+    curl --http1.1 --retry 5 --retry-delay 3 --retry-all-errors -fsSL "https://download.docker.com/linux/static/stable/${docker_arch}/docker-28.3.3.tgz" -o /tmp/docker.tgz; \
+    tar -xzf /tmp/docker.tgz -C /tmp; \
+    mv /tmp/docker/docker /usr/local/bin/docker; \
+    chmod +x /usr/local/bin/docker; \
+    rm -rf /tmp/docker /tmp/docker.tgz
 
 RUN set -eux; \
     arch="$(dpkg --print-architecture)"; \
