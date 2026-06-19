@@ -36,6 +36,19 @@ The operating model is simple: Jenkins builds and pushes images, Kubernetes runs
 
 For the GitHub-based CI/CD path, see `docs/github-jenkins.md`.
 
+For a submission-ready project report, see `docs/submission-report.md`.
+
+For live backend API testing, import the Postman collection from `docs/postman/finguard-api.postman_collection.json`.
+
+## Live Links
+
+- GitHub: `https://github.com/bharath-541/finguard-devops-platform`
+- Application dashboard: `http://3.110.140.20`
+- Prometheus: `http://3.110.140.20:30090`
+- Grafana: `http://3.110.140.20:30300`
+- Kibana: `http://3.110.140.20:30561`
+- Jenkins local: `http://localhost:8081`
+
 ## Local Demo
 
 Requirements:

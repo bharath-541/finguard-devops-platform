@@ -1,0 +1,294 @@
+{
+  "info": {
+    "_postman_id": "cc6a2274-1f59-43c8-91db-finguard-lite",
+    "name": "FinGuard Lite Fraud API",
+    "description": "Live API requests for demonstrating the FinGuard Lite fraud scoring backend.",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    {
+      "key": "base_url",
+      "value": "http://3.110.140.20",
+      "type": "string"
+    },
+    {
+      "key": "prometheus_url",
+      "value": "http://3.110.140.20:30090",
+      "type": "string"
+    }
+  ],
+  "item": [
+    {
+      "name": "Health Check",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/health",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "health"
+          ]
+        },
+        "description": "Checks if the fraud API is healthy and returns active scoring thresholds."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Health endpoint is OK\", function () {",
+              "  pm.response.to.have.status(200);",
+              "  pm.expect(pm.response.json().status).to.eql(\"ok\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Score Transaction - Low Risk ALLOW",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"transactionId\": \"txn-demo-allow-001\",\n  \"amount\": 1200,\n  \"currency\": \"INR\",\n  \"country\": \"IN\",\n  \"deviceId\": \"device-known-101\",\n  \"customerId\": \"cust-demo-001\",\n  \"failedLogins\": 0,\n  \"velocity\": 1,\n  \"networkStatus\": \"OK\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/score",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "score"
+          ]
+        },
+        "description": "Scores a normal transaction. Expected decision: ALLOW."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Transaction scored\", function () {",
+              "  pm.response.to.have.status(200);",
+              "  const body = pm.response.json();",
+              "  pm.expect(body).to.have.property(\"riskScore\");",
+              "  pm.expect(body).to.have.property(\"decision\");",
+              "  pm.expect(body.decision).to.eql(\"ALLOW\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Score Transaction - Medium Risk REVIEW",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"transactionId\": \"txn-demo-review-001\",\n  \"amount\": 65000,\n  \"currency\": \"INR\",\n  \"country\": \"IN\",\n  \"deviceId\": \"device-known-202\",\n  \"customerId\": \"cust-demo-002\",\n  \"failedLogins\": 2,\n  \"velocity\": 3,\n  \"networkStatus\": \"OK\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/score",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "score"
+          ]
+        },
+        "description": "Scores a moderately suspicious transaction. Expected decision: REVIEW."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Transaction requires review\", function () {",
+              "  pm.response.to.have.status(200);",
+              "  pm.expect(pm.response.json().decision).to.eql(\"REVIEW\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Score Transaction - High Risk BLOCK",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"transactionId\": \"txn-demo-block-001\",\n  \"amount\": 150000,\n  \"currency\": \"INR\",\n  \"country\": \"BR\",\n  \"deviceId\": \"unknown-device-909\",\n  \"customerId\": \"cust-demo-003\",\n  \"failedLogins\": 7,\n  \"velocity\": 14,\n  \"networkStatus\": \"DEGRADED\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/score",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "score"
+          ]
+        },
+        "description": "Scores a high-risk transaction. Expected decision: BLOCK."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Transaction is blocked\", function () {",
+              "  pm.response.to.have.status(200);",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.decision).to.eql(\"BLOCK\");",
+              "  pm.expect(body.reasons.length).to.be.greaterThan(0);",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Score Transaction - Payment Network Failure",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"transactionId\": \"txn-demo-network-down-001\",\n  \"amount\": 85000,\n  \"currency\": \"INR\",\n  \"country\": \"IN\",\n  \"deviceId\": \"risk-device-404\",\n  \"customerId\": \"cust-demo-004\",\n  \"failedLogins\": 4,\n  \"velocity\": 8,\n  \"networkStatus\": \"DOWN\"\n}"
+        },
+        "url": {
+          "raw": "{{base_url}}/api/score",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "score"
+          ]
+        },
+        "description": "Simulates a risky transaction during payment network downtime."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Network failure transaction scored\", function () {",
+              "  pm.response.to.have.status(200);",
+              "  const body = pm.response.json();",
+              "  pm.expect(body.reasons).to.include(\"payment_network_timeout\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Recent Transactions",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_url}}/api/recent",
+          "host": [
+            "{{base_url}}"
+          ],
+          "path": [
+            "api",
+            "recent"
+          ]
+        },
+        "description": "Returns recently scored transactions from API memory."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Recent transactions returned\", function () {",
+              "  pm.response.to.have.status(200);",
+              "  pm.expect(pm.response.json()).to.have.property(\"items\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "Prometheus Metrics",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{prometheus_url}}/api/v1/query?query=finguard_transactions_total",
+          "host": [
+            "{{prometheus_url}}"
+          ],
+          "path": [
+            "api",
+            "v1",
+            "query"
+          ],
+          "query": [
+            {
+              "key": "query",
+              "value": "finguard_transactions_total"
+            }
+          ]
+        },
+        "description": "Queries Prometheus for live FinGuard transaction metrics."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test(\"Prometheus query returned\", function () {",
+              "  pm.response.to.have.status(200);",
+              "  pm.expect(pm.response.json().status).to.eql(\"success\");",
+              "});"
+            ]
+          }
+        }
+      ]
+    }
+  ]
+}
